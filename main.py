@@ -3,12 +3,13 @@ from datetime import datetime, timedelta, timezone
 import time
 import os
 from dotenv import load_dotenv
+import pandas as pd
 
 load_dotenv()
 
 # Telegram Bot Token
 TOKEN = os.getenv("TOKEN")
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(token=TOKEN)
 
 # Define Bangladesh Timezone (UTC+6)
 BDT = timezone(timedelta(hours=6))
@@ -23,16 +24,36 @@ birthdays = {
 # Chat IDs to send the message to (you can hardcode or dynamically add these IDs)
 subscribers = [123456789, 987654321]  # Replace with actual chat IDs
 
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+	bot.reply_to(message, "Howdy, how are you doing?")
+
 # Function to send birthday messages
+def check_connected_channels():
+    updates = bot.get_updates()
+    print(updates)
+    group_chat_ids = set()
+    groups = []
+    for update in updates:
+        if update.message and update.message.chat.type in ['group', 'supergroup']:
+            group_chat_ids.add(update.message.chat.id)
+    for id in group_chat_ids:
+        try:
+            status = bot.get_chat_member(chat_id=id, user_id=bot.get_me().id)
+            if str(status.status) != "kicked":
+                groups.append(id)
+        except Exception as e:
+            print(f"Telebot: {e}")
+    print(groups)
+
 def send_birthday_message():
     while True:
         # Get the current time in BDT
         now_bdt = datetime.now(BDT)
-        current_date = now_bdt.strftime('%Y-%m-%d')
+        employees = get_bday_guys()
 
-        # Check if today is a birthday
-        if current_date in birthdays:
-            message = birthdays[current_date]
+        if len(employees):
+            message = f"Happy Birthday {" ".join(employees)}"
 
             # Send message to all subscribers
             for chat_id in subscribers:
@@ -51,21 +72,19 @@ def send_birthday_message():
             # Sleep for an hour and check again
             time.sleep(3600)
 
-# Command to add a new birthday (optional, to dynamically add birthdays)
-@bot.message_handler(commands=['add_birthday'])
-def add_birthday(message):
-    try:
-        _, date, name = message.text.split(' ', 2)
-        birthdays[date] = f"Happy Birthday to {name}!"
-        bot.reply_to(message, f"Birthday added for {name} on {date}!")
-    except ValueError:
-        bot.reply_to(message, "Invalid format. Use: /add_birthday YYYY-MM-DD Name")
+def get_bday_guys():
+    df = pd.read_csv("data/Employee Database (PSC) - Sheet3.csv")
+    print(df.head(10))
+    d = pd.Timestamp.today()
+    names = []
+    for _, row in df.iterrows():
+        row["BOD"] = pd.to_datetime(row["BOD"])
+        if row["BOD"].month == d.month and row["BOD"].day == d.day:
+            names.append(row["Names"])
+    return names
 
 # Start the bot
 if __name__ == '__main__':
-    print("Bot is running...")
-    bot.polling(none_stop=True)
-
-    # Run the birthday message sender in parallel
-    # send_birthday_message()
+    # bot.infinity_polling(interval=0, timeout=20)
     check_connected_channels()
+    
