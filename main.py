@@ -3,6 +3,10 @@ from datetime import timedelta, timezone
 import pandas as pd
 from apscheduler.schedulers.background import BackgroundScheduler
 from config import TOKEN
+import logging
+import time
+
+logging.basicConfig(level=logging.INFO)
 
 # Telegram Bot Token
 bot = telebot.TeleBot(token=TOKEN)
@@ -15,8 +19,8 @@ subscribers = [-4616198859]  # Replace with actual chat IDs
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    print(message.chat.id)
-    bot.reply_to(message, "Hello, I am vinchi, and I can wish you people on their birthdays.")
+    logging.info(message.chat.id)
+    bot.reply_to(message, "Hello, I am vinci, and I can wish you people on their birthdays.")
 
 def get_bday_guys():
     df = pd.read_csv("data/Employee Database (PSC) - Sheet3.csv")
@@ -38,19 +42,20 @@ def send_birthday_message():
         for chat_id in subscribers:
             try:
                 bot.send_message(chat_id, message)
-                print(f"Sent: '{message}' to {chat_id}")
+                logging.info(f"Sent: '{message}' to {chat_id}")
             except Exception as e:
-                print(f"Failed to send message to {chat_id}: {e}")
+                logging.info(f"Failed to send message to {chat_id}: {e}")
     else:
-        print(f"No birthdays today")
+        logging.info(f"No birthdays today")
 
 # Start the bot
 if __name__ == '__main__':
     scheduler = BackgroundScheduler(timezone=BDT)
-    scheduler.add_job(send_birthday_message, 'cron', hour=0, minute=0)
+    scheduler.add_job(send_birthday_message, 'cron', hour=0, minute=0, misfire_grace_time=300)
     try:
-        print(f"Bot has started...")
+        logging.info(f"Bot has started...")
+        time.sleep(5)
         scheduler.start()
         bot.infinity_polling(interval=0, timeout=40)
     except Exception as e:
-        print(f"ERROR: {e}")
+        logging.info(f"ERROR: {e}")

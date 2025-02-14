@@ -5,4 +5,9 @@ services:
     build: .
     environment:
       TOKEN: ${TOKEN}
+      TZ: Asia/Dhaka
+    working_dir: /bot
+    command: python main.py
     restart: always
+    volumes:
+      - .:/bo
