@@ -1,0 +1,8 @@
+name: vinchi_the_cringy
+services:
+  birthday_bot:
+    container_name: birthday_bot
+    build: .
+    environment:
+      TOKEN: ${TOKEN}
+    restart: always
