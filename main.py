@@ -47,7 +47,7 @@ def send_birthday_message():
 # Start the bot
 if __name__ == '__main__':
     scheduler = BackgroundScheduler(timezone=BDT)
-    scheduler.add_job(send_birthday_message, 'cron', hour=0, minute=45)
+    scheduler.add_job(send_birthday_message, 'cron', hour=1, minute=34)
     try:
         print(f"Bot has started...")
         scheduler.start()
