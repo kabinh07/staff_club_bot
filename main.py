@@ -4,6 +4,7 @@ import time
 import os
 from dotenv import load_dotenv
 import pandas as pd
+import threading
 
 load_dotenv()
 
@@ -22,11 +23,12 @@ birthdays = {
 }
 
 # Chat IDs to send the message to (you can hardcode or dynamically add these IDs)
-subscribers = [123456789, 987654321]  # Replace with actual chat IDs
+subscribers = [-4616198859]  # Replace with actual chat IDs
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-	bot.reply_to(message, "Howdy, how are you doing?")
+    print(message.chat.id)
+    bot.reply_to(message, "Howdy, how are you doing?")
 
 # Function to send birthday messages
 def check_connected_channels():
@@ -85,6 +87,5 @@ def get_bday_guys():
 
 # Start the bot
 if __name__ == '__main__':
-    # bot.infinity_polling(interval=0, timeout=20)
-    check_connected_channels()
+    bot.infinity_polling(interval=0, timeout=20)
     
