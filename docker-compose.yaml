@@ -10,4 +10,4 @@ services:
     command: python main.py
     restart: always
     volumes:
-      - .:/bo
+      - .:/bot

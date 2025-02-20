@@ -23,7 +23,7 @@ def send_welcome(message):
     bot.reply_to(message, "Hello, I am vinci, and I can wish you people on their birthdays.")
 
 def get_bday_guys():
-    df = pd.read_csv("data/Employee Database (PSC) - Sheet3.csv")
+    df = pd.read_csv("data/polygon_employees_bod.csv")
     d = pd.Timestamp.today()
     names = []
     for _, row in df.iterrows():
@@ -51,7 +51,7 @@ def send_birthday_message():
 # Start the bot
 if __name__ == '__main__':
     scheduler = BackgroundScheduler(timezone=BDT)
-    scheduler.add_job(send_birthday_message, 'cron', hour=0, minute=0, misfire_grace_time=300)
+    scheduler.add_job(send_birthday_message, 'cron', hour=0, minute=1, misfire_grace_time=300)
     try:
         logging.info(f"Bot has started...")
         time.sleep(5)
