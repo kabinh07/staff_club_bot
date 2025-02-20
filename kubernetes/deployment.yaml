@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telebot-deployment
+  namespace: polygon-explore
+  labels:
+    app: telebot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telebot
+  template:
+    metadata:
+      labels:
+        app: telebot
+    spec:
+      containers:
+        - name: telebot
+          image: your-dockerhub-username/telebot:latest  # Replace with your actual image
+          env:
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: telebot-secret
+                  key: token
+          volumeMounts:
+            - name: spreadsheet-data
+              mountPath: /app/data  # Adjust based on where your bot accesses the spreadsheet
+      volumes:
+        - name: spreadsheet-data
+          emptyDir: {}

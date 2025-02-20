@@ -1,2 +1,9 @@
 venv
 .env
+kubernetes
+.gitignore
+.git
+__pycache__
+README.md
+Dockerfile
+docker-compose.yaml
