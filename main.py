@@ -15,15 +15,17 @@ bot = telebot.TeleBot(token=TOKEN)
 BDT = timezone(timedelta(hours=6))
 
 # Chat IDs to send the message to (you can hardcode or dynamically add these IDs)
-subscribers = [-4616198859]  # Replace with actual chat IDs
+subscribers = [-1001413972467]  # Replace with actual chat IDs
+thread_id = 2833
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    logging.info(message.chat.id)
-    bot.reply_to(message, "Hello, I am vinci, and I can wish you people on their birthdays.")
+    logging.info(message.chat.id, message.message_thread_id)
+    if message.message_thread_id == thread_id:
+        bot.reply_to(message, "Hello, I am vinchi, and I can wish you people on their birthdays.")
 
 def get_bday_guys():
-    df = pd.read_csv("data/polygon_employees_bod.csv")
+    df = pd.read_csv("data/employees_polygon_bod.csv")
     d = pd.Timestamp.today()
     names = []
     for _, row in df.iterrows():
@@ -41,7 +43,7 @@ def send_birthday_message():
         # Send message to all subscribers
         for chat_id in subscribers:
             try:
-                bot.send_message(chat_id, message)
+                bot.send_message(chat_id, message, message_thread_id=thread_id)
                 logging.info(f"Sent: '{message}' to {chat_id}")
             except Exception as e:
                 logging.info(f"Failed to send message to {chat_id}: {e}")

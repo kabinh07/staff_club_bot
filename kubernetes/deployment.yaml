@@ -17,16 +17,13 @@ spec:
     spec:
       containers:
         - name: telebot
-          image: your-dockerhub-username/telebot:latest  # Replace with your actual image
+          image: polygontechxyz/birthday_bot_psc:latest
           env:
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
                   name: telebot-secret
-                  key: token
-          volumeMounts:
-            - name: spreadsheet-data
-              mountPath: /app/data  # Adjust based on where your bot accesses the spreadsheet
-      volumes:
-        - name: spreadsheet-data
-          emptyDir: {}
+                  key: TOKEN
+      imagePullSecrets:
+        - name: regcred
+      
