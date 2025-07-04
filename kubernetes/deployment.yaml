@@ -17,6 +17,8 @@ spec:
     spec:
       containers:
         - name: telebot
+          securityContext:
+            privileged: true
           image: polygontechxyz/birthday_bot_psc:latest
           env:
             - name: TOKEN
@@ -24,6 +26,8 @@ spec:
                 secretKeyRef:
                   name: telebot-secret
                   key: TOKEN
+          command: ["/bin/bash", "-c"]
+          args: ["ulimit -n 65536 && python3 main.py"]
       imagePullSecrets:
         - name: regcred
       
