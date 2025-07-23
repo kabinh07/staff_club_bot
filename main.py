@@ -20,7 +20,7 @@ thread_id = 2833
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    logging.info(message.chat.id, message.message_thread_id)
+    logging.info(f"Message ID: {message.chat.id} Thread ID: {message.message_thread_id}")
     if message.message_thread_id == thread_id:
         bot.reply_to(message, "Hello, I am vinchi, and I can wish you people on their birthdays.")
 
