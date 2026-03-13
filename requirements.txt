@@ -1,3 +1,4 @@
-pandas==2.2.3
 pyTelegramBotAPI==4.26.0
 APScheduler==3.11.0
+mysql-connector-python==8.2.0
+python-dotenv==1.0.0

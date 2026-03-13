@@ -26,8 +26,32 @@ spec:
                 secretKeyRef:
                   name: telebot-secret
                   key: TOKEN
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: telebot-secret
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: telebot-secret
+                  key: DB_PORT
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: telebot-secret
+                  key: DB_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: telebot-secret
+                  key: DB_PASS
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: telebot-secret
+                  key: DB_NAME
           command: ["/bin/bash", "-c"]
           args: ["ulimit -n 65536 && python3 main.py"]
       imagePullSecrets:
         - name: regcred
-      
